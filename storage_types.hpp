@@ -29,6 +29,7 @@ public:
 
 private:
     std::list<int> queue;
+    PackageQueueType queue_type;
 };
 
 class IPackageQueue : public IPackageStockPile
