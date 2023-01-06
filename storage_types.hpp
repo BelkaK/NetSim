@@ -2,6 +2,7 @@
 #define STORAGE_TYPES
 
 #include <list>
+#include "package.hpp"
 
 enum class PackageQueueType
 {
@@ -9,7 +10,7 @@ enum class PackageQueueType
     LIFO
 };
 
-class PackageQueue : private IPackageStockPile
+class PackageQueue : public IPackageQueue
 {
 public:
     PackageQueue(PackageQueueType);
@@ -30,7 +31,14 @@ private:
     std::list<int> queue;
 };
 
-class IPackageStockPile : private IPackageQueue
+class IPackageQueue : public IPackageStockPile
+{
+public:
+    virtual Package pop() = 0;
+    virtual PackageQueueType get_queue_type() const = 0;
+};
+
+class IPackageStockPile
 {
 public:
     using const_iterator = std::list<Package>::const_iterator;
@@ -42,12 +50,6 @@ public:
     virtual std::list<int>::const_iterator cend() const = 0;
     virtual std::list<int>::const_iterator begin() const = 0;
     virtual std::list<int>::const_iterator end() const = 0;
-};
-class IPackageQueue
-{
-public:
-    virtual Package pop() = 0;
-    virtual PackageQueueType get_queue_type() const = 0;
 };
 
 #endif
