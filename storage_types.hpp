@@ -9,7 +9,28 @@ enum class PackageQueueType
     LIFO
 };
 
-class IPackageStockPile
+class PackageQueue : private IPackageStockPile
+{
+public:
+    PackageQueue(PackageQueueType);
+
+    Package pop() override;
+    void push() override;
+    unsigned int size() const override;
+    bool empty() const override;
+
+    PackageQueueType get_queue_type() const override;
+
+    std::list<int>::const_iterator cbegin() const override;
+    std::list<int>::const_iterator cend() const override;
+    std::list<int>::const_iterator begin() const override;
+    std::list<int>::const_iterator end() const override;
+
+private:
+    std::list<int> queue;
+};
+
+class IPackageStockPile : private IPackageQueue
 {
 public:
     using const_iterator = std::list<Package>::const_iterator;
