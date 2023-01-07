@@ -16,10 +16,22 @@ public:
     {
         // konstruktor kopiujący
     }
-    Package &operator=(Package &&)
+    Package &operator=(Package &&other)
     {
         // nadpisanie operatora przypisywania
         // nie wiem czemu nie pytajcie mnie ;-;
+        if (this == &other)
+            return *this;
+        id = other.id;
+    }
+    Package &operator=(const Package &other)
+    {
+        // funkcja dodana przeze mnie!!!
+        // żeby działała metoda pop() w PackageQueue
+        // do naprawy i usunięcia w przyszłości
+        if (this == &other)
+            return *this;
+        id = other.id;
     }
     ElementID get_id() const
     {
