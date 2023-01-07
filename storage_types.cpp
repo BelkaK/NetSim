@@ -17,11 +17,11 @@ public:
         switch (queue_type)
         {
         case PackageQueueType::LIFO:
-            result = queue.back();
+            result = std::move(queue.back());
             queue.pop_back();
             break;
         case PackageQueueType::FIFO:
-            result = queue.front();
+            result = std::move(queue.front());
             queue.pop_front();
             break;
 

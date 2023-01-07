@@ -10,28 +10,21 @@ public:
     }
     Package(ElementID id)
     {
-        // przydziela ID takie jak id
+        // przydziela ID takie jak id (jeżeli id jest wolne)
     }
     Package(Package &&)
     {
-        // konstruktor kopiujący
+        // konstruktor NIE kopiujący!!!!!
+        // konstruktor przesuwający
+        // ustala parametry nowego obiektu na stary
+        // i "USUWA" stary obiekt (ustawia id starego na np. -1)
     }
     Package &operator=(Package &&other)
     {
-        // nadpisanie operatora przypisywania
-        // nie wiem czemu nie pytajcie mnie ;-;
         if (this == &other)
             return *this;
         id = other.id;
-    }
-    Package &operator=(const Package &other)
-    {
-        // funkcja dodana przeze mnie!!!
-        // żeby działała metoda pop() w PackageQueue
-        // do naprawy i usunięcia w przyszłości
-        if (this == &other)
-            return *this;
-        id = other.id;
+        other.id = -1;
     }
     ElementID get_id() const
     {

@@ -1,6 +1,6 @@
 #ifndef TYPES
 #define TYPES
 
-using ElementID = unsigned int;
+using ElementID = int;
 
 #endif
