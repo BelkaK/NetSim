@@ -1,23 +1,25 @@
 #ifndef PACKAGE
 #define PACKAGE
 
-#include <list>
+#include <set>
 #include "types.hpp"
+#include <algorithm>
+#include <iostream>
 
 class Package
 {
 public:
     Package();
-    Package(ElementID);
-    Package(Package &&);
-    Package &operator=(Package &&);
-    ElementID get_id() const;
+    Package(ElementID id_);
+    Package(Package &&old);
+    Package &operator=(Package &&other);
+    ElementID get_id() const { return id; }
     ~Package();
 
 private:
     ElementID id;
-    static std::list<ElementID> assigned_IDs;
-    static std::list<ElementID> freed_IDs;
+    static std::set<ElementID> assigned_IDs;
+    static std::set<ElementID> freed_IDs;
 };
 
 #endif
