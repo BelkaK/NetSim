@@ -1,77 +1,69 @@
 #include "storage_types.hpp"
 
-class PackageQueue : public IPackageQueue
+PackageQueue::PackageQueue(PackageQueueType queue_t)
 {
-public:
-    PackageQueue(PackageQueueType queue_t)
-    {
-        // konstruktor, ustawia queue_type na argument
-        queue_type = queue_t;
-    }
+    // konstruktor, ustawia queue_type na argument
+    queue_type = queue_t;
+}
 
-    Package pop() override
+Package PackageQueue::pop()
+{
+    // w zależności od rodzaju kolejki wyciąga
+    // pierwszy lub ostatni element
+    Package result;
+    switch (queue_type)
     {
-        // w zależności od rodzaju kolejki wyciąga
-        // pierwszy lub ostatni element
-        Package result;
-        switch (queue_type)
-        {
-        case PackageQueueType::LIFO:
-            result = std::move(queue.back());
-            queue.pop_back();
-            break;
-        case PackageQueueType::FIFO:
-            result = std::move(queue.front());
-            queue.pop_front();
-            break;
+    case PackageQueueType::LIFO:
+        result = std::move(queue.back());
+        queue.pop_back();
+        break;
+    case PackageQueueType::FIFO:
+        result = std::move(queue.front());
+        queue.pop_front();
+        break;
 
-        default:
-            break;
-        }
-        return result;
+    default:
+        break;
     }
-    void push(Package &&package) override
-    {
-        // wkłada element na koniec kolejki
-        queue.push_back(package);
-    }
-    unsigned int size() const override
-    {
-        // oddaje ilość elementów w kolejce
-        return queue.size();
-    }
-    bool empty() const override
-    {
-        // zwraca true jeżeli kolejka jest pusta
-        // false w każdym innym przypadku
-        return queue.empty();
-    }
+    return result;
+}
+void PackageQueue::push(Package &&package)
+{
+    // wkłada element na koniec kolejki
+    queue.push_back(package);
+}
+unsigned int PackageQueue::size() const
+{
+    // oddaje ilość elementów w kolejce
+    return queue.size();
+}
+bool PackageQueue::empty() const
+{
+    // zwraca true jeżeli kolejka jest pusta
+    // false w każdym innym przypadku
+    return queue.empty();
+}
 
-    PackageQueueType get_queue_type() const override
-    {
-        // oddaje rodzaj kolejki
-        return queue_type;
-    }
+PackageQueueType PackageQueue::get_queue_type() const
+{
+    // oddaje rodzaj kolejki
+    return queue_type;
+}
 
-    // iteratory : )
-    std::list<Package>::const_iterator cbegin() const override
-    {
-        return queue.cbegin();
-    }
-    std::list<Package>::const_iterator cend() const override
-    {
-        return queue.cend();
-    }
-    std::list<Package>::const_iterator begin() const override
-    {
-        return queue.begin();
-    }
-    std::list<Package>::const_iterator end() const override
-    {
-        return queue.end();
-    }
-
-private:
-    std::list<Package> queue;
-    PackageQueueType queue_type;
-};
+// iteratory : )
+std::list<Package>::const_iterator PackageQueue::cbegin() const
+{
+    return queue.cbegin();
+}
+std::list<Package>::const_iterator PackageQueue::cend() const
+{
+    return queue.cend();
+}
+std::list<Package>::const_iterator PackageQueue::begin() const
+{
+    return queue.begin();
+}
+std::list<Package>::const_iterator PackageQueue::end() const
+{
+    return queue.end();
+}
