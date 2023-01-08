@@ -28,7 +28,7 @@ public:
     std::list<Package>::const_iterator end() const override;
 
 private:
-    std::list<int> queue;
+    std::list<Package> queue;
     PackageQueueType queue_type;
 };
 
