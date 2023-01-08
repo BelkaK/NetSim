@@ -1,0 +1,3 @@
+G:/Program Files/ZPO/sieci/NetSim/cmake-build-debug-mingw/CMakeFiles/NetSim.dir
+G:/Program Files/ZPO/sieci/NetSim/cmake-build-debug-mingw/CMakeFiles/edit_cache.dir
+G:/Program Files/ZPO/sieci/NetSim/cmake-build-debug-mingw/CMakeFiles/rebuild_cache.dir
