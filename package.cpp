@@ -1,43 +1,59 @@
 #include "package.hpp"
 
-class Package
+Package::Package()
 {
-public:
-    Package()
+    if (freed_IDs.empty())
     {
-        // konstruktor domyślny (ma przyznawać najmniejszy możliwy numer id)
-        // najpierw szuka w freed_IDs.
-    }
-    Package(ElementID id)
-    {
-        // przydziela ID takie jak id (jeżeli id jest wolne)
-    }
-    Package(Package &&)
-    {
-        // konstruktor NIE kopiujący!!!!!
-        // konstruktor przesuwający
-        // ustala parametry nowego obiektu na stary
-        // i "USUWA" stary obiekt (ustawia id starego na np. -1)
-    }
-    Package &operator=(Package &&other)
-    {
-        if (this == &other)
-            return *this;
-        id = other.id;
-        other.id = -1;
-    }
-    ElementID get_id() const
-    {
-        return id;
-    }
-    ~Package()
-    {
-        // ma dodać id usuwanego obiektu do freed_IDs
-        // i usunąć je z assigned_IDs
-    }
+        ElementID value = -1;
+        if (assigned_IDs.empty())
+            value = 1;
+        else
+            value = *(assigned_IDs.rbegin()) + 1;
 
-private:
-    ElementID id;
-    static std::list<ElementID> assigned_IDs;
-    static std::list<ElementID> freed_IDs;
-};
+        assigned_IDs.insert(value);
+        id = value;
+    }
+    else
+    {
+        id = *(freed_IDs.begin());
+        assigned_IDs.insert(id);
+        freed_IDs.erase(id);
+    }
+}
+
+Package::Package(ElementID id_)
+{
+    bool found = std::find(assigned_IDs.begin(), assigned_IDs.end(), id_) == assigned_IDs.end();
+    if (found)
+    {
+        std::cout << "ID jest już zajęte" << std::endl;
+    }
+    else
+    {
+        id = id_;
+        assigned_IDs.insert(id);
+    }
+}
+
+Package::Package(Package &&old)
+{
+    id = old.id;
+    old.id = -1;
+}
+
+Package &Package::operator=(Package &&other)
+{
+    if (this == &other)
+        return *this;
+    id = other.id;
+    other.id = -1;
+}
+
+Package::~Package()
+{
+    if (id != 0)
+    {
+        freed_IDs.insert(id);
+        assigned_IDs.erase(id);
+    }
+}
