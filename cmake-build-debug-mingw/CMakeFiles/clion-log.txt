@@ -1,4 +1,0 @@
-"G:\Program Files\JetBrains\CLion 2021.3.3\bin\cmake\win\bin\cmake.exe" -DCMAKE_BUILD_TYPE=Debug "-DCMAKE_MAKE_PROGRAM=G:/Program Files/JetBrains/CLion 2021.3.3/bin/ninja/win/ninja.exe" -G Ninja "G:\Program Files\ZPO\sieci\NetSim"
--- Configuring done
--- Generating done
--- Build files have been written to: G:/Program Files/ZPO/sieci/NetSim/cmake-build-debug-mingw
