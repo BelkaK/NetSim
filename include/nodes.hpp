@@ -19,7 +19,7 @@ enum class ReceiverType{
 class IPackageReceiver{
 public:
     virtual void receive_package(Package&& p) = 0;
-    virtual ElementID get_id() const { return id_;}
+    virtual ElementID get_id() const = 0;
     virtual IPackageStockpile::const_iterator  cbegin() const = 0;
     virtual IPackageStockpile::const_iterator cend() const = 0;
     virtual IPackageStockpile::const_iterator begin() const = 0;
@@ -37,8 +37,8 @@ private:
     std::unique_ptr<PackageQueue> d_;
 
 public:
-    Storehouse(ElementID id, std::unique_ptr<IPackageQueue> d = std::make_unique<PackageQueue> (PackageQueueType::FIFO));
-
+    Storehouse(ElementID id, std::unique_ptr<IPackageQueue> d);
+    ElementID get_id() const override {return id_;}
     void receive_package(Package&& p) override;
 
 
@@ -68,6 +68,8 @@ public:
     const_iterator begin() const {return preferences_.begin();}
     const_iterator end() const {return preferences_.end();}
 
+    virtual ~ReceiverPreferences() = default;
+
 private:
     ProbabilityGenerator gen;
 };
@@ -82,7 +84,7 @@ public:
     std::optional<Package>& get_sending_buffer() {return buffer_;}
 
 protected:
-    void push_package(Package&&);
+    void push_package(Package&& p);
 private:
     std::optional<Package> buffer_ = std::nullopt;
 };
@@ -114,8 +116,8 @@ public:
     void receive_package(Package&& p) override;
     ElementID get_id() const override {return id_;}
     void do_work(Time t);
-    TimeOffset get_processing_duration() const;
-    Time get_package_processing_start_time() const;
+    TimeOffset get_processing_duration() const {return offset;};
+    Time get_package_processing_start_time() const {return start_time;};
 
     virtual IPackageStockpile::const_iterator cbegin() const override {return queue->cbegin();}
     virtual IPackageStockpile::const_iterator cend() const override {return queue->cend();}
