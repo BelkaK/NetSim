@@ -36,6 +36,10 @@ public:
     std::list<Package>::const_iterator cend() const override;
     std::list<Package>::const_iterator begin() const override;
     std::list<Package>::const_iterator end() const override;
+
+private:
+    ElementID id_;
+    std::unique_ptr<IPackageStockPile> d_;
 };
 
 
@@ -58,6 +62,7 @@ public:
 
 private:
     preferences_t preferences_;
+    ProbabilityGenerator pg_;
 };
 
 
