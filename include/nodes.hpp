@@ -3,39 +3,49 @@
 #include "package.hpp"
 #include <memory>
 #include "storage_types.hpp"
-#include "package.hpp"
+#include "helpers.hpp"
 #include <optional>
-#include "map"
+#include <map>
+#include "types.hpp"
 
 
 enum class ReceiverType{
-    Ramp,
-    Worker,
-    Storehouse
+    RAMP,
+    WORKER,
+    STOREHOUSE
 };
 
 
 class IPackageReceiver{
 public:
     virtual void receive_package(Package&& p) = 0;
-    virtual ElementID get_id() const = 0;
-    virtual std::list<Package>::const_iterator cbegin() const = 0;
-    virtual std::list<Package>::const_iterator cend() const = 0;
-    virtual std::list<Package>::const_iterator begin() const = 0;
-    virtual std::list<Package>::const_iterator end() const = 0;
+    virtual ElementID get_id() const { return id_;}
+    virtual IPackageStockpile::const_iterator  cbegin() const = 0;
+    virtual IPackageStockpile::const_iterator cend() const = 0;
+    virtual IPackageStockpile::const_iterator begin() const = 0;
+    virtual IPackageStockpile::const_iterator end() const = 0;
+
+
+    virtual ~IPackageReceiver() = default;
+protected:
+    ElementID id_;
 };
 
 
 class Storehouse: public IPackageReceiver{
-public:
-    Storehouse(ElementID id, std::unique_ptr<IPackageStockPile> d);
-    void receive_package(Package&& p) override;
-    ElementID get_id() const override;
+private:
+    std::unique_ptr<PackageQueue> d_;
 
-    std::list<Package>::const_iterator cbegin() const override;
-    std::list<Package>::const_iterator cend() const override;
-    std::list<Package>::const_iterator begin() const override;
-    std::list<Package>::const_iterator end() const override;
+public:
+    Storehouse(ElementID id, std::unique_ptr<IPackageQueue> d = std::make_unique<PackageQueue> (PackageQueueType::FIFO));
+
+    void receive_package(Package&& p) override;
+
+
+    virtual IPackageStockpile::const_iterator cbegin() const override {return d_->cbegin();}
+    virtual IPackageStockpile::const_iterator cend() const override{return d_->cend();}
+    virtual IPackageStockpile::const_iterator begin() const override{return d_->begin();}
+    virtual IPackageStockpile::const_iterator end() const override{return d_->end();}
 };
 
 
@@ -44,57 +54,73 @@ public:
     using preferences_t = std::map<IPackageReceiver*, double>;
     using const_iterator = preferences_t::const_iterator;
 
-    ReceiverPreferences(ProbabilityGenerator pg);
+    preferences_t preferences_;
+
+    ReceiverPreferences(ProbabilityGenerator pg = probability_generator) : gen(std::move(pg)) {}
     void add_receiver(IPackageReceiver* r);
     void remove_receiver(IPackageReceiver* r);
     IPackageReceiver* choose_receiver();
-    preferences_t get_preferences() const;
+    preferences_t get_preferences() const {return preferences_;}
 
     //nie wiem czy Package czy cos innego
-    std::list<Package>::const_iterator cbegin() const;
-    std::list<Package>::const_iterator cend() const;
-    std::list<Package>::const_iterator begin() const;
-    std::list<Package>::const_iterator end() const;
+    const_iterator cbegin() const {return preferences_.cbegin();}
+    const_iterator cend() const {return preferences_.cend();}
+    const_iterator begin() const {return preferences_.begin();}
+    const_iterator end() const {return preferences_.end();}
 
 private:
-    preferences_t preferences_;
+    ProbabilityGenerator gen;
 };
 
 
-class PackageSender{
+class PackageSender : public ReceiverPreferences{
 public:
-    PackageSender(PackageSender&&);
+    ReceiverPreferences receiver_preferences_;
+    PackageSender(): receiver_preferences_(default_probability_generator) {}
+    PackageSender(PackageSender&&) = default;
     void send_package();
-    std::optional<Package>& get_sending_buffer() const;
-
-private:
-    ReceiverPreferences received_preferences_;
+    std::optional<Package>& get_sending_buffer() {return buffer_;}
 
 protected:
     void push_package(Package&&);
+private:
+    std::optional<Package> buffer_ = std::nullopt;
 };
 
 
-class Ramp{
-    Ramp(ElementID id, TimeOffset di);
+class Ramp : public PackageSender{
+
+public:
+    Ramp(ElementID id, TimeOffset di) : id_(id), offset_(di), delivery_time_(0) {}
     void deliver_goods(Time t);
-    TimeOffset get_delivery_interval() const;
-    ElementID get_id() const;
+    TimeOffset get_delivery_interval() const {return offset_;}
+    ElementID get_id() const {return id_;}
+private:
+    ElementID id_;
+    TimeOffset offset_;
+    Time delivery_time_;
 };
 
 
-class Worker: public IPackageReceiver{
-    Worker(ElementID id, TimeOffset pd, std::unique_ptr<IPackageQueue>);
+class Worker: public IPackageReceiver, public PackageSender {
+private:
+    TimeOffset  offset;
+    Time start_time;
+    std::unique_ptr<IPackageQueue> queue;
+    std::optional<Package> current_package;
+
+public:
+    Worker(ElementID id, TimeOffset pd, std::unique_ptr<IPackageQueue> q);
     void receive_package(Package&& p) override;
-    ElementID get_id() const override;
+    ElementID get_id() const override {return id_;}
     void do_work(Time t);
     TimeOffset get_processing_duration() const;
     Time get_package_processing_start_time() const;
 
-    std::list<Package>::const_iterator cbegin() const override;
-    std::list<Package>::const_iterator cend() const override;
-    std::list<Package>::const_iterator begin() const override;
-    std::list<Package>::const_iterator end() const override;
+    virtual IPackageStockpile::const_iterator cbegin() const override {return queue->cbegin();}
+    virtual IPackageStockpile::const_iterator cend() const override {return queue->cend();}
+    virtual IPackageStockpile::const_iterator begin() const override {return queue->begin();}
+    virtual IPackageStockpile::const_iterator end() const override {return queue->end();}
 };
 
 

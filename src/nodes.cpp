@@ -2,7 +2,7 @@
 
 //STOREHOUSE
 
-Storehouse::Storehouse(ElementID id, std::unique_ptr<IPackageStockPile> d) {
+Storehouse::Storehouse(ElementID id, std::unique_ptr<IPackageStockpile> d) {
 
 }
 
