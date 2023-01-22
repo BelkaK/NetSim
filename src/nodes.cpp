@@ -54,7 +54,9 @@ IPackageReceiver* ReceiverPreferences::choose_receiver() {
 //PACKAGE SENDER
 
 void PackageSender::send_package() {
-
+    IPackageReceiver* package_receiver = receiver_preferences_.choose_receiver();
+    package_receiver->receive_package(std::move(buffer_.value()));
+    buffer_.reset();
 }
 
 
