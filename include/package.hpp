@@ -1,28 +1,26 @@
-#ifndef PACKAGE
-#define PACKAGE
+#ifndef NETSIM_PACKAGE_HPP
+#define NETSIM_PACKAGE_HPP
 
-#include <set>
 #include "types.hpp"
-#include <algorithm>
-#include <iostream>
+#include <set>
 
 
-
-class Package
-{
+class Package{
 public:
+    static std::set<ElementID> freed_IDs_;
+    static std::set<ElementID> assigned_IDs_;
     Package();
-    Package(ElementID id_);
-    Package(Package &&old);
-    Package(const Package&) = default;
-    Package &operator=(Package &&other);
-    ElementID get_id() const { return id; }
+    Package(ElementID id) : id_(id) {}
+    Package(Package&& other) noexcept;
+
+    ElementID get_id() const { return id_; }
+    Package& operator=(Package&&) = default;
     ~Package();
 
-private:
-    ElementID id;
-    static std::set<ElementID> assigned_IDs;
-    static std::set<ElementID> freed_IDs;
+protected:
+
+    ElementID id_;
 };
 
-#endif
+
+#endif //NET_SIM_PACKAGE_HPP
