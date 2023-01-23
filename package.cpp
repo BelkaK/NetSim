@@ -1,59 +1,43 @@
 #include "package.hpp"
 
-Package::Package()
+class Package
 {
-    if (freed_IDs.empty())
+public:
+    Package()
     {
-        ElementID value = -1;
-        if (assigned_IDs.empty())
-            value = 1;
-        else
-            value = *(assigned_IDs.rbegin()) + 1;
-
-        assigned_IDs.insert(value);
-        id = value;
+        // konstruktor domyślny (ma przyznawać najmniejszy możliwy numer id)
+        // najpierw szuka w freed_IDs.
     }
-    else
+    Package(ElementID id)
     {
-        id = *(freed_IDs.begin());
-        assigned_IDs.insert(id);
-        freed_IDs.erase(id);
+        // przydziela ID takie jak id (jeżeli id jest wolne)
     }
-}
-
-Package::Package(ElementID id_)
-{
-    bool found = std::find(assigned_IDs.begin(), assigned_IDs.end(), id_) == assigned_IDs.end();
-    if (found)
+    Package(Package &&)
     {
-        std::cout << "ID jest już zajęte" << std::endl;
+        // konstruktor NIE kopiujący!!!!!
+        // konstruktor przesuwający
+        // ustala parametry nowego obiektu na stary
+        // i "USUWA" stary obiekt (ustawia id starego na np. -1)
     }
-    else
+    Package &operator=(Package &&other)
     {
-        id = id_;
-        assigned_IDs.insert(id);
+        if (this == &other)
+            return *this;
+        id = other.id;
+        other.id = -1;
     }
-}
-
-Package::Package(Package &&old)
-{
-    id = old.id;
-    old.id = -1;
-}
-
-Package &Package::operator=(Package &&other)
-{
-    if (this == &other)
-        return *this;
-    id = other.id;
-    other.id = -1;
-}
-
-Package::~Package()
-{
-    if (id != 0)
+    ElementID get_id() const
     {
-        freed_IDs.insert(id);
-        assigned_IDs.erase(id);
+        return id;
     }
-}
+    ~Package()
+    {
+        // ma dodać id usuwanego obiektu do freed_IDs
+        // i usunąć je z assigned_IDs
+    }
+
+private:
+    ElementID id;
+    static std::list<ElementID> assigned_IDs;
+    static std::list<ElementID> freed_IDs;
+};
