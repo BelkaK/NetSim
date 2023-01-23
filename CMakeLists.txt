@@ -9,16 +9,18 @@ set(SOURCE_FILES
         src/storage_types.cpp
         src/helpers.cpp
         src/nodes.cpp
+        src/factory.cpp
         include/package.hpp
         include/storage_types.hpp
         include/types.hpp
         include/helpers.hpp
         include/nodes.hpp
+        include/factory.hpp
         )
 
 set(SOURCES_FILES_TESTS
         test/tests.cpp
-        )
+        src/factory.cpp include/factory.hpp)
 
 add_compile_options(-Wall -Wextra -Werror -Wpedantic -pedantic-errors -Wconversion)
 
