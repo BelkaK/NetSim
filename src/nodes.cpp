@@ -113,3 +113,33 @@ void Worker::do_work(Time t) {
     }
 }
 
+Ramp &Ramp::operator=(Ramp &&other)
+{
+    if (this == &other)
+        return *this;
+    id_ = other.id_;
+    other.id_ = -1;
+
+    offset_ = other.offset_;
+    other.offset_ = -1;
+
+
+    delivery_time_ = other.delivery_time_;
+    other.delivery_time_ = -1;
+    return *this;
+}
+
+Worker &Worker::operator=(Worker &&other)
+{
+    if (this == &other)
+        return *this;
+
+
+    offset = other.offset;
+    other.offset = -1;
+
+
+    start_time = other.start_time;
+    other.start_time = -1;
+    return *this;
+}

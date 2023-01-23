@@ -18,15 +18,33 @@ public:
     NodeCollection<T>::const_iterator cbegin() const {return collection.cbegin();}
     NodeCollection<T>::const_iterator cend() const {return collection.cend();}
 
-
     void add(T&& node) {collection.push_back(std::move(node));}
-    void remove_by_id(ElementID id);
-
-    NodeCollection<T>::iterator find_by_id(ElementID id);
-
-
-    NodeCollection<T>::const_iterator find_by_id(ElementID id) const;
-
+    void remove_by_id(ElementID id)
+    {
+        auto it = find_by_id(id);
+        if(it != end())
+            collection.erase(it);
+    }
+    NodeCollection<T>::iterator find_by_id(ElementID id)
+    {
+        for (auto it = begin(); it < end(); it++)
+        {
+            if(it->get_id() == id)
+                return it;
+        }
+        std::cout << "element not found" << std::endl;
+        return end();
+    }
+    NodeCollection<T>::const_iterator find_by_id(ElementID id) const
+    {
+        for(auto it = cbegin(); it < cend(); it++)
+        {
+            if(it->get_id() == id)
+                return it;
+        }
+        std::cout << "element not found" << std::endl;
+        return cend();
+    }
 
 private:
     container_t collection;

@@ -97,6 +97,9 @@ public:
     void deliver_goods(Time t);
     TimeOffset get_delivery_interval() const {return offset_;}
     ElementID get_id() const {return id_;}
+    Ramp &operator=(Ramp &&other);
+    Ramp(Ramp&&)  = default;
+
 private:
     ElementID id_;
     TimeOffset offset_;
@@ -113,6 +116,8 @@ private:
 
 public:
     Worker(ElementID id, TimeOffset pd, std::unique_ptr<IPackageQueue> q);
+    Worker &operator=(Worker &&other);
+    Worker(Worker&&) = default;
     void receive_package(Package&& p) override;
     ElementID get_id() const override {return id_;}
     void do_work(Time t);
