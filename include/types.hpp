@@ -2,9 +2,9 @@
 #define TYPES
 #include <functional>
 
-using ElementID = int;
-using TimeOffset = int;
-using Time = int;
+using ElementID = unsigned int;
+using TimeOffset = unsigned int;
+using Time = unsigned int;
 using ProbabilityGenerator = std::function<double()>;
 
 #endif

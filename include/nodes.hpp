@@ -19,6 +19,7 @@ class IPackageReceiver
 public:
     virtual void receive_package(Package &&p) = 0;
     virtual ElementID get_id() const = 0;
+    virtual ReceiverType get_receiver_type(void) const { return type; }
     virtual IPackageStockpile::const_iterator cbegin() const = 0;
     virtual IPackageStockpile::const_iterator cend() const = 0;
     virtual IPackageStockpile::const_iterator begin() const = 0;
@@ -28,6 +29,7 @@ public:
 
 protected:
     ElementID id_;
+    ReceiverType type;
 };
 
 class Storehouse : public IPackageReceiver
@@ -92,11 +94,10 @@ public:
     Ramp(ElementID id, TimeOffset di) : id_(id),offset_(di) {}
     void deliver_goods(Time t);
 
-    TimeOffset get_delivery_interval() const {return offset_;}
-    ElementID get_id() const {return id_;}
+    TimeOffset get_delivery_interval() const { return offset_; }
+    ElementID get_id() const { return id_; }
     Ramp &operator=(Ramp &&other);
-    Ramp(Ramp&&)  = default;
-
+    Ramp(Ramp &&) = default;
 
 private:
     ElementID id_;
@@ -116,9 +117,9 @@ public:
     Worker(ElementID id, TimeOffset pd, std::unique_ptr<IPackageQueue> q);
 
     Worker &operator=(Worker &&other);
-    Worker(Worker&&) = default;
-    void receive_package(Package&& p) override;
-    ElementID get_id() const override {return id_;}
+    Worker(Worker &&) = default;
+    void receive_package(Package &&p) override;
+    ElementID get_id() const override { return id_; }
 
     void do_work(Time t);
     TimeOffset get_processing_duration() const { return offset; };
