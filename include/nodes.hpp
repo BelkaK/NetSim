@@ -93,8 +93,12 @@ class Ramp : public PackageSender
 public:
     Ramp(ElementID id, TimeOffset di) : id_(id), offset_(di), delivery_time_(0) {}
     void deliver_goods(Time t);
-    TimeOffset get_delivery_interval() const { return offset_; }
-    ElementID get_id() const { return id_; }
+
+    TimeOffset get_delivery_interval() const {return offset_;}
+    ElementID get_id() const {return id_;}
+    Ramp &operator=(Ramp &&other);
+    Ramp(Ramp&&)  = default;
+
 
 private:
     ElementID id_;
@@ -112,8 +116,12 @@ private:
 
 public:
     Worker(ElementID id, TimeOffset pd, std::unique_ptr<IPackageQueue> q);
-    void receive_package(Package &&p) override;
-    ElementID get_id() const override { return id_; }
+
+    Worker &operator=(Worker &&other);
+    Worker(Worker&&) = default;
+    void receive_package(Package&& p) override;
+    ElementID get_id() const override {return id_;}
+
     void do_work(Time t);
     TimeOffset get_processing_duration() const { return offset; };
     Time get_package_processing_start_time() const { return start_time; };
