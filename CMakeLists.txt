@@ -14,10 +14,13 @@ set(SOURCE_FILES
         include/types.hpp
         include/helpers.hpp
         include/nodes.hpp
+        include/config.hpp
         )
 
 set(SOURCES_FILES_TESTS
-        test/tests.cpp
+        test/test_nodes.cpp
+        test/test_package.cpp
+        test/test_storage_types.cpp
         )
 
 add_compile_options(-Wall -Wextra -Werror -Wpedantic -pedantic-errors -Wconversion)
@@ -44,6 +47,7 @@ if(EXISTS ${PROJECT_SOURCE_DIR}/test)
     target_include_directories(${EXEC_TEST} PUBLIC
             ${GTEST_ROOT}/googlemock/include
             ${GTEST_ROOT}/googletest/include
+            mocks
             )
 
     add_subdirectory(${GTEST_ROOT} googletest-master)
