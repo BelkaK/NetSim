@@ -9,18 +9,26 @@ set(SOURCE_FILES
         src/storage_types.cpp
         src/helpers.cpp
         src/nodes.cpp
-        src/factory.cpp
+        #src/factory.cpp
         include/package.hpp
         include/storage_types.hpp
         include/types.hpp
         include/helpers.hpp
         include/nodes.hpp
-        include/factory.hpp
+        #include/factory.hpp
+        include/config.hpp
+        mocks/nodes_mocks.hpp
         )
 
 set(SOURCES_FILES_TESTS
-        test/tests.cpp
-        src/factory.cpp include/factory.hpp)
+        test/test_nodes.cpp
+        #test/test_Factory.cpp
+        #test/test_factory_io.cpp
+        #test/test_reports.cpp
+        #test/test_sumilate.cpp
+        test/test_package.cpp
+        test/test_storage_types.cpp
+        )
 
 add_compile_options(-Wall -Wextra -Werror -Wpedantic -pedantic-errors -Wconversion)
 
@@ -46,6 +54,7 @@ if(EXISTS ${PROJECT_SOURCE_DIR}/test)
     target_include_directories(${EXEC_TEST} PUBLIC
             ${GTEST_ROOT}/googlemock/include
             ${GTEST_ROOT}/googletest/include
+            mocks
             )
 
     add_subdirectory(${GTEST_ROOT} googletest-master)

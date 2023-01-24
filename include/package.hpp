@@ -12,7 +12,7 @@ public:
     Package();
     Package(ElementID id) : id_(id) {}
     Package(Package&& other) noexcept;
-
+    Package(const Package&) = default;
     ElementID get_id() const { return id_; }
     Package& operator=(Package&&) = default;
     ~Package();
