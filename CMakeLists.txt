@@ -9,16 +9,23 @@ set(SOURCE_FILES
         src/storage_types.cpp
         src/helpers.cpp
         src/nodes.cpp
+        #src/factory.cpp
         include/package.hpp
         include/storage_types.hpp
         include/types.hpp
         include/helpers.hpp
         include/nodes.hpp
+        #include/factory.hpp
         include/config.hpp
+        mocks/nodes_mocks.hpp
         )
 
 set(SOURCES_FILES_TESTS
         test/test_nodes.cpp
+        #test/test_Factory.cpp
+        #test/test_factory_io.cpp
+        #test/test_reports.cpp
+        #test/test_sumilate.cpp
         test/test_package.cpp
         test/test_storage_types.cpp
         )
