@@ -1,19 +1,21 @@
 #include "storage_types.hpp"
 
-Package PackageQueue::pop()
-{
-    // w zależności od rodzaju kolejki wyciąga
-    // pierwszy lub ostatni element
+Package PackageQueue::pop(){
     Package result;
-    if (queue_type == PackageQueueType::LIFO)
-    {
-        result = std::move(queue.back());
-        queue.pop_back();
-    }
-    if (queue_type == PackageQueueType::FIFO)
-    {
-        result = std::move(queue.front());
-        queue.pop_front();
+    Package::freed_IDs_.insert(result.get_id());
+    Package::assigned_IDs_.erase(result.get_id());
+    switch(queue_type){
+        case PackageQueueType::LIFO:
+            result = std::move(*queue.end());
+            queue.pop_back();
+            break;
+        case PackageQueueType::FIFO:
+            result = std::move(*queue.begin());
+            queue.pop_front();
+            break;
+        default:
+
+            break;
     }
     return result;
 }
