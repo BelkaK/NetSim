@@ -1,62 +1,34 @@
 #include "package.hpp"
 
-Package::Package()
+
+
+std::set<ElementID> Package::freed_IDs_;
+std::set<ElementID> Package::assigned_IDs_;
+
+
+Package::Package() {
+    if (!freed_IDs_.empty()) {
+        id_ = *freed_IDs_.begin();
+        assigned_IDs_.insert(id_);    /* dodanie nowego id  do zbioru przypsanych */
+        freed_IDs_.erase(id_);    /* usunięcie przypisanego ze zbioru wolnych */
+    }
+    else if (!assigned_IDs_.empty()) {  //tutaj brakowało elsa po prostu
+        id_ = *(assigned_IDs_.rbegin()) + 1;        /* inkrementacja */
+        assigned_IDs_.insert(id_);
+    }
+    else {
+        id_ = 1;
+        assigned_IDs_.insert(id_);
+    }
+}
+
+Package::~Package() {
+    assigned_IDs_.erase(id_);   // usuwamm stary
+    freed_IDs_.insert(id_);   // dodaje do wolnych do uzycia
+
+}
+
+Package::Package(Package&& other) noexcept
 {
-    if (freed_IDs.empty())
-    {
-        ElementID value = -1;
-        if (assigned_IDs.empty())
-            value = 1;
-        else
-            value = *(assigned_IDs.rbegin()) + 1;
-
-        assigned_IDs.insert(value);
-        id = value;
-    }
-    else
-    {
-        id = *(freed_IDs.begin());
-        assigned_IDs.insert(id);
-        freed_IDs.erase(id);
-    }
+    id_ = other.id_;
 }
-
-Package::Package(ElementID id_)
-{
-    bool found = std::find(assigned_IDs.begin(), assigned_IDs.end(), id_) == assigned_IDs.end();
-    if (found)
-    {
-        std::cout << "ID jest już zajęte" << std::endl;
-    }
-    else
-    {
-        id = id_;
-        assigned_IDs.insert(id);
-    }
-}
-
-Package::Package(Package &&old)
-{
-    id = old.id;
-    old.id = -1;
-}
-
-Package &Package::operator=(Package &&other) {
-    if (this == &other)
-        return *this;
-    id = other.id;
-    other.id = -1;
-    return *this;
-}
-
-Package::~Package()
-{
-    if (id != 0)
-    {
-        freed_IDs.insert(id);
-        assigned_IDs.erase(id);
-    }
-}
-
-std::set<ElementID> Package::assigned_IDs;
-std::set<ElementID> Package::freed_IDs;

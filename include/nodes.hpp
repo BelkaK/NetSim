@@ -38,7 +38,7 @@ private:
     std::unique_ptr<PackageQueue> d_;
 
 public:
-    Storehouse(ElementID id, std::unique_ptr<IPackageQueue> d);
+    Storehouse(ElementID id, std::unique_ptr<PackageQueue> d = std::make_unique<PackageQueue>(PackageQueue(PackageQueueType::FIFO)));
     ElementID get_id() const override { return id_; }
     void receive_package(Package &&p) override;
 
@@ -84,8 +84,6 @@ public:
 
 protected:
     void push_package(Package &&p);
-
-private:
     std::optional<Package> buffer_ = std::nullopt;
 };
 
@@ -93,7 +91,7 @@ class Ramp : public PackageSender
 {
 
 public:
-    Ramp(ElementID id, TimeOffset di) : id_(id), offset_(di), delivery_time_(0) {}
+    Ramp(ElementID id, TimeOffset di) : id_(id),offset_(di) {}
     void deliver_goods(Time t);
 
     TimeOffset get_delivery_interval() const { return offset_; }
@@ -104,7 +102,7 @@ public:
 private:
     ElementID id_;
     TimeOffset offset_;
-    Time delivery_time_;
+    unsigned long long start_time_ = UINTMAX_MAX;
 };
 
 class Worker : public IPackageReceiver, public PackageSender
