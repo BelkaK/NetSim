@@ -6,21 +6,26 @@ std::set<ElementID> Package::freed_IDs_;
 std::set<ElementID> Package::assigned_IDs_;
 
 
-Package::Package() {
-    if (!freed_IDs_.empty()) {
-        id_ = *freed_IDs_.begin();
-        assigned_IDs_.insert(id_);    /* dodanie nowego id  do zbioru przypsanych */
-        freed_IDs_.erase(id_);    /* usunięcie przypisanego ze zbioru wolnych */
+Package::Package(){
+    if(!(freed_IDs_.empty())){
+        ElementID minID = *freed_IDs_.begin();
+        id_ = minID;
+        freed_IDs_.erase(minID);
+        assigned_IDs_.insert(minID);
     }
-    else if (!assigned_IDs_.empty()) {  //tutaj brakowało elsa po prostu
-        id_ = *(assigned_IDs_.rbegin()) + 1;        /* inkrementacja */
-        assigned_IDs_.insert(id_);
-    }
-    else {
-        id_ = 1;
-        assigned_IDs_.insert(id_);
+    else{
+        if(assigned_IDs_.empty()){
+            id_ = 1;
+            assigned_IDs_.insert(1);
+        }
+        else{
+            ElementID maxID = *(assigned_IDs_.rbegin());
+            id_ = maxID + 1;
+            assigned_IDs_.insert(maxID + 1);
+        }
     }
 }
+
 
 Package::~Package() {
     assigned_IDs_.erase(id_);   // usuwamm stary

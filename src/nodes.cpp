@@ -16,7 +16,7 @@ void Storehouse::receive_package(Package&& p) {
 //ReceiverPreferences
 
 void ReceiverPreferences::add_receiver(IPackageReceiver* r) {
-    preferences_.emplace(r,1);
+    preferences_.insert(std::pair<IPackageReceiver*,double>(r, 1/double(preferences_.size())));
     for(auto i = preferences_.begin(); i != preferences_.end(); i++)
     {
         i->second = 1/double(preferences_.size());
@@ -36,7 +36,7 @@ void ReceiverPreferences::remove_receiver(IPackageReceiver* r) {
 }
 
 IPackageReceiver* ReceiverPreferences::choose_receiver() {
-    double lottery = probability_generator();
+    double lottery = gen();
     double suma = 0.0;
     for(auto i = preferences_.begin(); i!=preferences_.end(); i++){
         suma += i->second;
@@ -89,11 +89,10 @@ void Worker::receive_package(Package&& p) {
     if(!get_sending_buffer())
     {
         queue->push(std::move(p));
-    }
-    else
-    {
-        queue->push(std::move(p));
         push_package(queue->pop());
+    }
+    else {
+        queue->push(std::move(p));
     }
 }
 
