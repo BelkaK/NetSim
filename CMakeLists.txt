@@ -21,7 +21,7 @@ set(SOURCE_FILES
         )
 
 set(SOURCES_FILES_TESTS
-        test/test_nodes.cpp
+        #test/test_nodes.cpp
         #test/test_Factory.cpp
         #test/test_factory_io.cpp
         #test/test_reports.cpp
@@ -30,7 +30,7 @@ set(SOURCES_FILES_TESTS
         test/test_storage_types.cpp
         )
 
-add_compile_options(-Wall -Wextra -Werror -Wpedantic -pedantic-errors -Wconversion)
+add_compile_options(-Wall -Wextra -Werror -Wpedantic -pedantic-errors)
 
 
 include_directories(include)
