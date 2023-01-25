@@ -58,7 +58,7 @@ public:
     void add_receiver(IPackageReceiver *r);
     void remove_receiver(IPackageReceiver *r);
     IPackageReceiver *choose_receiver();
-    preferences_t get_preferences() const { return preferences_; }
+    const preferences_t& get_preferences() const { return preferences_; }
 
     // nie wiem czy Package czy cos innego
     const_iterator cbegin() const { return preferences_.cbegin(); }

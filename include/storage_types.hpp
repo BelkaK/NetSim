@@ -39,7 +39,7 @@ public:
     PackageQueue(PackageQueueType queue_type) : queue_type(queue_type){};
 
     Package pop() override;
-    void push(Package &&t) override { queue.push_back(t); };
+    void push(Package &&t) override { queue.push_back(std::move(t)); };
     std::size_t size() const override { return queue.size(); };
     bool empty() const override;
 
